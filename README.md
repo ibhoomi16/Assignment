@@ -43,3 +43,4 @@ This project is an AI-driven assistant to help you plan projects and visualize t
 
 3. The assistant will generate a Gantt chart visualization and save it as a PNG file.
 
+<img width="1397" height="902" alt="Screenshot 2025-11-03 130754" src="https://github.com/user-attachments/assets/d070e17f-afee-4cb2-8d34-3945c317199f" />
