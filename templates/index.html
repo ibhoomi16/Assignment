@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        .chat-section {
+            border-right: 2px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .user-message {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .assistant-message {
+            background: #f1f8e9;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .message-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .chart-section {
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+        }
+        
+        .chart-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .chart-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart-image {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .placeholder {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+        
+        .placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .example-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .example-box h4 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+        
+        .example-text {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-line;
+        }
+        
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-section {
+                border-right: none;
+                border-bottom: 2px solid #f0f0f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Project Planner</h1>
+            <p>AI-powered Gantt chart generator</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h2>💬 Chat</h2>
+                    <button class="btn-secondary" onclick="clearChat()">🗑️ Clear</button>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">👋</div>
+                        <p>Hi! Describe your project tasks and I'll create a Gantt chart for you.</p>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>💡 Example</h4>
+                        <div class="example-text">I'm planning a website with:
+- Research (3 days)
+- Design (5 days)
+- Development (10 days)
+- Testing (3 days)</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <textarea 
+                        class="chat-input" 
+                        id="user-input" 
+                        rows="3" 
+                        placeholder="Describe your project tasks here..."
+                    ></textarea>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="sendMessage()">📤 Send</button>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Thinking...</p>
+                </div>
+            </div>
+            
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2>📊 Gantt Chart</h2>
+                </div>
+                
+                <div class="chart-container" id="chart-container">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">📈</div>
+                        <p>Your Gantt chart will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const sessionId = 'session_' + Date.now();
+        
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage('user', message);
+            input.value = '';
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message, session_id: sessionId})
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessage('assistant', data.reply);
+                    
+                    if (data.chart_available) {
+                        loadChart();
+                    }
+                } else {
+                    addMessage('assistant', '❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                addMessage('assistant', '❌ Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function addMessage(role, content) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+            
+            const label = role === 'user' ? 'You' : '🤖 Assistant';
+            messageDiv.innerHTML = `
+                <div class="message-label">${label}</div>
+                <div>${content.replace(/\n/g, '<br>')}</div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function loadChart() {
+            const container = document.getElementById('chart-container');
+            container.innerHTML = `
+                <img src="/api/chart?t=${Date.now()}" class="chart-image" alt="Gantt Chart">
+                <button class="btn-primary" style="margin-top: 20px;" onclick="downloadChart()">
+                    💾 Download Chart
+                </button>
+            `;
+        }
+        
+        function downloadChart() {
+            window.location.href = '/api/download';
+        }
+        
+        async function clearChat() {
+            if (!confirm('Clear chat history?')) return;
+            
+            try {
+                await fetch('/api/clear', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({session_id: sessionId})
+                });
+                
+                document.getElementById('chat-messages').innerHTML = `
+                    <div class="placeholder">
+                        <div class="placeholder-icon">👋</div>
+                        <p>Chat cleared! Start a new conversation.</p>
+                    </div>
+                `;
+                
+                document.getElementById('chart-container').innerHTML = `
+                    <div class="placeholder">
+                        <div class="placeholder-icon">📈</div>
+                        <p>Your Gantt chart will appear here</p>
+                    </div>
+                `;
+            } catch (error) {
+                alert('Error clearing chat: ' + error.message);
+            }
+        }
+        
+        // Enter key to send
+        document.getElementById('user-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
